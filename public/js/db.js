@@ -21,3 +21,12 @@ request.onupgradeneeded = function (e) {
 request.onerror = function (e) {
     console.log(`Woops! ${e.target.errorCode}`);
 };
+
+// Will store the data in the cache when offline.
+function saveRecord(record) {
+    const transaction = db.transaction(['new_transaction'], 'readwrite');
+
+    const budgetObjectStore = transaction.objectStore('new_transaction');
+  
+    budgetObjectStore.add(record);
+};
