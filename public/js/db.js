@@ -3,19 +3,28 @@ let db;
 const request = indexedDB.open('budget_tracker', 1);
 
 // this will happen if the database version changes
-request.onupgradeneeded = function(event) {
+request.onupgradeneeded = function (event) {
     const db = event.target.result;
     db.createObjectStore('new_transaction', { autoIncrement: true });
 };
 
 // When successful 
-request.onsuccess = function(event) {
+request.onsuccess = function (event) {
     db = event.target.result;
     if (navigator.onLine) {
-      uploadTransaction();
+        uploadTransaction();
     }
-  };
-  
-request.onerror = function(event) {
-console.log(event.target.errorCode);
+};
+
+request.onerror = function (event) {
+    console.log(event.target.errorCode);
+};
+
+// Function for saving data when offline.
+function saveRecord(record) {
+    const transaction = db.transaction(['new_transaction'], 'readwrite');
+
+    const budgetObjectStore = transaction.objectStore('new_transaction');
+
+    budgetObjectStore.add(record);
 };
